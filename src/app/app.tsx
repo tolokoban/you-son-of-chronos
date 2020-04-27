@@ -2,6 +2,7 @@ import React from "react"
 import Tfw from 'tfw'
 
 import "./app.css"
+import DingURL from './ding.mp3'
 
 const Combo = Tfw.View.Combo
 const Icon = Tfw.View.Icon
@@ -24,9 +25,12 @@ interface ISound {
     speech: string
 }
 
-const INTERVAL = 200
+const INTERVAL = 50
+const DELAY_AFTER_DING = 1200
+const COUNTDOWN = 5
 
 export default class App extends React.Component<IAppProps, IAppState> {
+    private refAudio = React.createRef<HTMLAudioElement>()
     private time = 0
     private interval = 0
     private sounds: ISound[] = []
@@ -42,26 +46,50 @@ export default class App extends React.Component<IAppProps, IAppState> {
     }
 
     componentDidMount() {
-        window.speechSynthesis.getVoices()
-            .filter(voice => voice.lang.startsWith("en"))
-            .forEach(voice => {
-                this.voices[voice.name] = voice
-            })
-        this.setState(
-            { voice: Object.keys(this.voices)[0] },
-            () => this.speak("Bienvenue à la prière au soleil!")
-        )
+        if ('speechSynthesis' in window) {
+            console.info("window.speechSynthesis=", window.speechSynthesis)
+            window.speechSynthesis.getVoices()
+                .filter(voice => voice.lang.startsWith("en"))
+                .forEach(voice => {
+                    this.voices[voice.name] = voice
+                })
+            this.setState(
+                { voice: Object.keys(this.voices)[0] },
+                () => this.speak("Bienvenue à la prière au soleil!")
+            )
+        } else {
+            Tfw.Factory.Dialog.error("No speech synthesis on this device!")
+        }
     }
 
     speak(text: string) {
-        console.log(text)
-        const voice = this.voices[this.state.voice]
-        if (!voice) return
-        const utter = new SpeechSynthesisUtterance(text)
-        //utter.voice = voice
-        utter.pitch = 1
-        utter.rate = 1
-        window.speechSynthesis.speak(utter)
+        if (text.charAt(0) === '#') {
+            // Countdown.
+            const utter = new SpeechSynthesisUtterance(text.substr(1))
+            const voice = this.voices[this.state.voice]
+            if (voice) utter.voice = voice
+            utter.pitch = 1.3
+            utter.rate = 0.8
+            window.speechSynthesis.speak(utter)
+
+            return
+        }
+
+        const audio = this.refAudio.current
+        if (audio) {
+            audio.play()
+        }
+        window.setTimeout(
+            () => {
+                const utter = new SpeechSynthesisUtterance(text)
+                const voice = this.voices[this.state.voice]
+                if (voice) utter.voice = voice
+                utter.pitch = 0.9
+                utter.rate = 1.2
+                window.speechSynthesis.speak(utter)
+            },
+            DELAY_AFTER_DING
+        )
     }
 
     handleVoiceChange = (voiceName: string) => {
@@ -69,7 +97,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
         const voice = this.voices[voiceName]
         if (!voice) return
 
-        this.speak("Hello guys! My name is Alfred: I am your personal coach.")
+        this.speak("Vous aimez ma voix ?")
     }
 
     handleStart = () => {
@@ -83,16 +111,30 @@ export default class App extends React.Component<IAppProps, IAppState> {
 
         for (let idxRepetition = 0; idxRepetition < repetitionsCount; idxRepetition++) {
             if (idxRepetition > 0) {
-                this.sounds.push({ time, speech: "Pause" })
+                // countdown.
+                for (let count = 1; count <= COUNTDOWN; count++) {
+                    this.sounds.push({ time: time - count, speech: `#${count}` })
+                }
+                this.sounds.push({ time, speech: `Pause de ${pauseBetweenRepetitions} secondes.` })
                 time += pauseBetweenRepetitions
             }
             for (let idxExercise = 0; idxExercise < exercicesCount; idxExercise++) {
-                this.sounds.push({ time, speech: `Exercise ${idxExercise + 1} of ${exercicesCount}` })
+                if (idxRepetition > 0 || idxExercise > 0) {
+                    // countdown.
+                    for (let count = 1; count <= COUNTDOWN; count++) {
+                        this.sounds.push({ time: time - count, speech: `#${count}` })
+                    }
+                }
+                this.sounds.push({ time, speech: `Exercice ${idxExercise + 1} sur ${exercicesCount}` })
                 time += exercicesDuration
             }
         }
-        this.sounds.push({ time, speech: `Well done!` })
-
+        // countdown.
+        for (let count = 1; count <= COUNTDOWN; count++) {
+            this.sounds.push({ time: time - count, speech: `#${count}` })
+        }
+        this.sounds.push({ time, speech: `Bravo ! Cette session est terminée.` })
+        this.sounds.sort((a, b) => a.time - b.time)
         this.time = Date.now()
         this.interval = window.setInterval(this.checkTime, INTERVAL)
         this.setState({ play: true })
@@ -127,40 +169,46 @@ export default class App extends React.Component<IAppProps, IAppState> {
 
         return (<div className={classes.join(' ')}>
             <div className="input">
-                <Combo
-                    wide={true}
-                    label="Coach's voice"
-                    value={this.state.voice}
-                    onChange={this.handleVoiceChange}>
-                    {
-                        voices.map(voiceName => <div key={voiceName}>{voiceName}</div>)
-                    }
-                </Combo>
-                <Input
-                    wide={true}
-                    label="Exercices Count"
-                    storage="exercicesCount"
-                    value={this.state.exercicesCount}
-                    onChange={exercicesCount => this.setState({ exercicesCount })} />
-                <Input
-                    wide={true}
-                    label="Exercices Duration"
-                    storage="exercicesDuration"
-                    value={this.state.exercicesDuration}
-                    onChange={exercicesDuration => this.setState({ exercicesDuration })} />
-                <Input
-                    wide={true}
-                    label="Repetitions Count"
-                    storage="repetitionsCount"
-                    value={this.state.repetitionsCount}
-                    onChange={repetitionsCount => this.setState({ repetitionsCount })} />
-                <Input
-                    wide={true}
-                    label="Pause Duration"
-                    storage="pauseBetweenRepetitions"
-                    value={this.state.pauseBetweenRepetitions}
-                    onChange={pauseBetweenRepetitions => this.setState({ pauseBetweenRepetitions })} />
-
+                {
+                    voices.length > 0 &&
+                    <Combo
+                        wide={true}
+                        label="Coach's voice"
+                        value={this.state.voice}
+                        onChange={this.handleVoiceChange}>
+                        {
+                            voices.map(voiceName => <div key={voiceName}>{voiceName}</div>)
+                        }
+                    </Combo>
+                }
+                <div className="input">
+                    <Input
+                        wide={true}
+                        label="Exercices Count"
+                        storage="exercicesCount"
+                        value={this.state.exercicesCount}
+                        onChange={exercicesCount => this.setState({ exercicesCount })} />
+                    <Input
+                        wide={true}
+                        label="Exercices Duration"
+                        storage="exercicesDuration"
+                        value={this.state.exercicesDuration}
+                        onChange={exercicesDuration => this.setState({ exercicesDuration })} />
+                </div>
+                <div className="input">
+                    <Input
+                        wide={true}
+                        label="Repetitions Count"
+                        storage="repetitionsCount"
+                        value={this.state.repetitionsCount}
+                        onChange={repetitionsCount => this.setState({ repetitionsCount })} />
+                    <Input
+                        wide={true}
+                        label="Pause Duration"
+                        storage="pauseBetweenRepetitions"
+                        value={this.state.pauseBetweenRepetitions}
+                        onChange={pauseBetweenRepetitions => this.setState({ pauseBetweenRepetitions })} />
+                </div>
             </div>
             <div className="play" >
                 {
@@ -180,6 +228,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
                     </button>
                 }
             </div >
+            <audio src={DingURL} ref={this.refAudio} />
         </div >)
     }
 }

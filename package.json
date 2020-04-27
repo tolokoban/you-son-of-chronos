@@ -71,6 +71,7 @@
         "worker-plugin": "^4.0.2"
     },
     "scripts": {
+        "deploy": "npm run build && gh-pages -d build",
         "start": "PORT=7001 node scripts/start.js",
         "build": "node scripts/build.js",
         "test": "node scripts/test.js"
