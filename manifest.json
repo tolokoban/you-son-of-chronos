@@ -21,7 +21,7 @@
         "purpose": "any maskable"
       }
   ],
-  "start_url": "./?source=pwa",
+  "start_url": "./?source=pwa&version=2",
   "background_color": "#2ca600",
   "display": "standalone",
   "scope": "/",
