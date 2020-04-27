@@ -1,0 +1,31 @@
+{
+  "files": {
+    "main.css": "./static/css/main.8816da08.chunk.css",
+    "main.js": "./static/js/main.b8ecdb08.chunk.js",
+    "main.js.map": "./static/js/main.b8ecdb08.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.884a770a.js",
+    "runtime-main.js.map": "./static/js/runtime-main.884a770a.js.map",
+    "static/css/2.7582ca43.chunk.css": "./static/css/2.7582ca43.chunk.css",
+    "static/js/2.bc85a7c8.chunk.js": "./static/js/2.bc85a7c8.chunk.js",
+    "static/js/2.bc85a7c8.chunk.js.map": "./static/js/2.bc85a7c8.chunk.js.map",
+    "index.html": "./index.html",
+    "precache-manifest.7d6fb53ee0ecc40749e175fecf6ba1a8.js": "./precache-manifest.7d6fb53ee0ecc40749e175fecf6ba1a8.js",
+    "service-worker.js": "./service-worker.js",
+    "static/css/2.7582ca43.chunk.css.map": "./static/css/2.7582ca43.chunk.css.map",
+    "static/css/main.8816da08.chunk.css.map": "./static/css/main.8816da08.chunk.css.map",
+    "static/js/2.bc85a7c8.chunk.js.LICENSE.txt": "./static/js/2.bc85a7c8.chunk.js.LICENSE.txt",
+    "static/media/dialog.yaml": "./static/media/dialog.99be908b.yaml",
+    "static/media/input-date.yaml": "./static/media/input-date.d9c85352.yaml",
+    "static/media/input-image.yaml": "./static/media/input-image.ed7190ea.yaml",
+    "static/media/josefin.css": "./static/media/josefin.7270440b.woff2",
+    "static/media/mystery-quest.css": "./static/media/mystery-quest-400.04c7e99b.woff2",
+    "static/media/color-picker.css": "./static/media/wheel.d73f403c.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.884a770a.js",
+    "static/css/2.7582ca43.chunk.css",
+    "static/js/2.bc85a7c8.chunk.js",
+    "static/css/main.8816da08.chunk.css",
+    "static/js/main.b8ecdb08.chunk.js"
+  ]
+}
