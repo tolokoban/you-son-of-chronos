@@ -53,10 +53,8 @@ export default class App extends React.Component<IAppProps, IAppState> {
                 .forEach(voice => {
                     this.voices[voice.name] = voice
                 })
-            this.setState(
-                { voice: Object.keys(this.voices)[0] },
-                () => this.speak("Bienvenue à la prière au soleil!")
-            )
+            this.setState({ voice: Object.keys(this.voices)[0] })
+            this.speak("#Bienvenue à la prière au soleil!")
         } else {
             Tfw.Factory.Dialog.error("No speech synthesis on this device!")
         }
@@ -66,7 +64,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
         if (text.charAt(0) === '#') {
             // Countdown.
             const utter = new SpeechSynthesisUtterance(text.substr(1))
-            const voice = this.voices[this.state.voice]
+            //const voice = this.voices[this.state.voice]
             //if (voice) utter.voice = voice
             utter.pitch = 1.4
             utter.rate = 1
