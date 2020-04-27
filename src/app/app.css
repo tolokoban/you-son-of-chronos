@@ -1,0 +1,33 @@
+html, body {
+    /*font-size: 6vmin;*/
+}
+
+div.App {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+}
+
+div.App > div.play {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div.App > div.play > button.button {
+    display: block;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35vmin;
+    height: 35vmin;
+    cursor: pointer;
+}
