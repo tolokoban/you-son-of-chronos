@@ -1,7 +1,7 @@
 {
-  "short_name": "TP-Admin",
-  "name": "Trail-Passion Admin",
-  "description": "Trail-Passion: Outdoor application",
+  "short_name": "Chronos",
+  "name": "You son of Chronos",
+  "description": "Voice chronometer for physical exercises",
   "icons": [
       {
         "src": "favicon.ico",
