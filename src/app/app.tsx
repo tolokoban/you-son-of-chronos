@@ -142,7 +142,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
 
     handleStop = () => {
         window.clearInterval(this.interval)
-        this.setState({ play: false }, () => this.speak("This session has been aborted!"))
+        this.setState({ play: false }, () => this.speak("Cette session vient d'être annulée."))
     }
 
     checkTime = () => {
