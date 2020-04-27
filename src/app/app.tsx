@@ -54,7 +54,11 @@ export default class App extends React.Component<IAppProps, IAppState> {
                     this.voices[voice.name] = voice
                 })
             this.setState({ voice: Object.keys(this.voices)[0] })
-            this.speak("#Bienvenue à la prière au soleil!")
+            window.setTimeout(
+                () => this.speak("#Bienvenue à la prière au soleil!"),
+                DELAY_AFTER_DING
+            )
+
         } else {
             Tfw.Factory.Dialog.error("No speech synthesis on this device!")
         }
