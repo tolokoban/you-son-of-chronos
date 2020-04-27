@@ -67,9 +67,9 @@ export default class App extends React.Component<IAppProps, IAppState> {
             // Countdown.
             const utter = new SpeechSynthesisUtterance(text.substr(1))
             const voice = this.voices[this.state.voice]
-            if (voice) utter.voice = voice
-            utter.pitch = 1.3
-            utter.rate = 0.8
+            //if (voice) utter.voice = voice
+            utter.pitch = 1.4
+            utter.rate = 1
             window.speechSynthesis.speak(utter)
 
             return
