@@ -12,8 +12,8 @@ const FADING_DURATION = 1000
 Tfw.Theme.register("chronos", {
     bg0: "#ddb",
     bg3: "#fff",
-    bgP: "#3f5",
-    bgS: "#f53"
+    bgP: "#2ca600",
+    bgS: "#f86"
 })
 Tfw.Theme.apply("chronos")
 
