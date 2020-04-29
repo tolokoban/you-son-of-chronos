@@ -10,7 +10,7 @@ import "./index.css"
 const FADING_DURATION = 1000
 
 Tfw.Theme.register("chronos", {
-    bg0: "#ddb",
+    bg0: "#cec",
     bg3: "#fff",
     bgP: "#2ca600",
     bgS: "#f86"
@@ -33,4 +33,4 @@ if (logo) {
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 
-serviceWorker.register()
+serviceWorker.unregister()

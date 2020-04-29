@@ -25,6 +25,11 @@ interface ISound {
     speech: string
 }
 
+interface IProgress {
+    exercise: number
+    repetition: number
+}
+
 const INTERVAL = 50
 const DELAY_AFTER_DING = 1200
 const COUNTDOWN = 5
@@ -65,13 +70,14 @@ export default class App extends React.Component<IAppProps, IAppState> {
     }
 
     speak(text: string) {
+        console.log("speak:", text)
         if (text.charAt(0) === '#') {
             // Countdown.
             const utter = new SpeechSynthesisUtterance(text.substr(1))
             const voice = this.voices[this.state.voice]
             if (voice) utter.voice = voice
-            utter.pitch = 1.4
-            utter.rate = 1
+            utter.pitch = 1.5
+            utter.rate = 1.1
             window.speechSynthesis.speak(utter)
 
             return
@@ -110,11 +116,12 @@ export default class App extends React.Component<IAppProps, IAppState> {
         const repetitionsCount = Tfw.Converter.Integer(this.state.repetitionsCount, 0)
         const pauseBetweenRepetitions = Tfw.Converter.Integer(this.state.pauseBetweenRepetitions, 0)
         let time = 0
+        const TIME_WITHOUT_COUNTDOWN = 5
 
         for (let idxRepetition = 0; idxRepetition < repetitionsCount; idxRepetition++) {
             if (idxRepetition > 0) {
                 // countdown.
-                for (let count = 1; count <= COUNTDOWN; count++) {
+                for (let count = 1; count <= Math.min(COUNTDOWN, pauseBetweenRepetitions - TIME_WITHOUT_COUNTDOWN); count++) {
                     this.sounds.push({ time: time - count, speech: `#${count}` })
                 }
                 this.sounds.push({ time, speech: `Pause de ${pauseBetweenRepetitions} secondes.` })
@@ -123,7 +130,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
             for (let idxExercise = 0; idxExercise < exercicesCount; idxExercise++) {
                 if (idxRepetition > 0 || idxExercise > 0) {
                     // countdown.
-                    for (let count = 1; count <= COUNTDOWN; count++) {
+                    for (let count = 1; count <= Math.min(COUNTDOWN, exercicesDuration - TIME_WITHOUT_COUNTDOWN); count++) {
                         this.sounds.push({ time: time - count, speech: `#${count}` })
                     }
                 }
@@ -132,18 +139,23 @@ export default class App extends React.Component<IAppProps, IAppState> {
             }
         }
         // countdown.
-        for (let count = 1; count <= COUNTDOWN; count++) {
+        for (let count = 1; count <= Math.min(COUNTDOWN, exercicesDuration - TIME_WITHOUT_COUNTDOWN); count++) {
             this.sounds.push({ time: time - count, speech: `#${count}` })
         }
         this.sounds.push({ time, speech: `Bravo ! Cette session est terminée.` })
         this.sounds.sort((a, b) => a.time - b.time)
+        for (const sound of this.sounds) {
+            console.log(sound.time, sound.speech)
+        }
         this.time = Date.now()
         this.interval = window.setInterval(this.checkTime, INTERVAL)
         this.setState({ play: true })
     }
 
     handleStop = () => {
+        this.sounds = []
         window.clearInterval(this.interval)
+        this.interval = 0
         this.setState({ play: false }, () => this.speak("Cette session vient d'être annulée."))
     }
 
