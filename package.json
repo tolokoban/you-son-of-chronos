@@ -1,6 +1,6 @@
 {
-    "name": "manual",
-    "version": "0.2.0",
+    "name": "Chronos",
+    "version": "0.4.0",
     "private": true,
     "proxy": "http://localhost:7474/TP",
     "homepage": "./",
@@ -73,6 +73,7 @@
     "scripts": {
         "deploy": "npm run build && gh-pages -d build",
         "start": "PORT=7001 node scripts/start.js",
+        "prebuild": "cp ./package.json src/config.json",
         "build": "node scripts/build.js",
         "test": "node scripts/test.js"
     },

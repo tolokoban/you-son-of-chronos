@@ -1,12 +1,13 @@
 import React from "react"
 import Tfw from 'tfw'
+import Wake from './wake'
 
+import Cfg from '../config.json'
 import "./app.css"
 import DingURL from './ding.mp3'
 
-const VERSION = "version 0.2.0"
+const VERSION = `${Cfg.name} v${Cfg.version}`
 
-const Combo = Tfw.View.Combo
 const Icon = Tfw.View.Icon
 const Input = Tfw.View.Input
 
@@ -113,6 +114,8 @@ export default class App extends React.Component<IAppProps, IAppState> {
     }
 
     handleStart = () => {
+        Wake.lockScreen()
+
         this.sounds = []
 
         const exercicesCount = Tfw.Converter.Integer(this.state.exercicesCount, 0)
@@ -157,6 +160,8 @@ export default class App extends React.Component<IAppProps, IAppState> {
     }
 
     handleStop = () => {
+        Wake.unlockScreen()
+
         this.sounds = []
         window.clearInterval(this.interval)
         this.interval = 0
@@ -195,7 +200,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
             'App', 'thm-bg0',
             ...Tfw.Converter.StringArray(this.props.className, [])
         ]
-        const voices = Object.keys(this.voices)
 
         return (<div className={classes.join(' ')}>
             <header className="thm-bgP thm-ele-bar">
