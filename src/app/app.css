@@ -11,6 +11,19 @@ div.App {
     align-items: stretch;
 }
 
+div.App > header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2rem;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 div.App > div.input > div {
     display: flex;
     flex-direction: row;

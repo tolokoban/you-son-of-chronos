@@ -4,6 +4,8 @@ import Tfw from 'tfw'
 import "./app.css"
 import DingURL from './ding.mp3'
 
+const VERSION = "version 0.2.0"
+
 const Combo = Tfw.View.Combo
 const Icon = Tfw.View.Icon
 const Input = Tfw.View.Input
@@ -18,6 +20,7 @@ interface IAppState {
     pauseBetweenRepetitions: string
     voice: string
     play: boolean
+    remainingTime: string
 }
 
 interface ISound {
@@ -30,8 +33,8 @@ interface IProgress {
     repetition: number
 }
 
-const INTERVAL = 50
-const DELAY_AFTER_DING = 1200
+const INTERVAL = 40
+const DELAY_AFTER_DING = 1000
 const COUNTDOWN = 5
 
 export default class App extends React.Component<IAppProps, IAppState> {
@@ -47,7 +50,8 @@ export default class App extends React.Component<IAppProps, IAppState> {
         repetitionsCount: "3",
         pauseBetweenRepetitions: "60",
         voice: "",
-        play: false
+        play: false,
+        remainingTime: ""
     }
 
     componentDidMount() {
@@ -167,6 +171,19 @@ export default class App extends React.Component<IAppProps, IAppState> {
             this.setState({ play: false })
             return
         }
+
+        for (const s of sounds) {
+            if (s.speech.charAt(0) === '#') continue
+            const remainingTime = Math.ceil(s.time - time)
+            const text = `${remainingTime > 0 ? remainingTime : ""}`
+            if (text !== this.state.remainingTime) {
+                this.setState({
+                    remainingTime: text
+                })
+            }
+            break
+        }
+
         const sound = sounds[0]
         if (sound.time > time) return
         sounds.shift()
@@ -179,22 +196,13 @@ export default class App extends React.Component<IAppProps, IAppState> {
             ...Tfw.Converter.StringArray(this.props.className, [])
         ]
         const voices = Object.keys(this.voices)
-        console.info("voices=", voices)
 
         return (<div className={classes.join(' ')}>
+            <header className="thm-bgP thm-ele-bar">
+                <div>{VERSION}</div>
+                <div>{this.state.remainingTime}</div>
+            </header>
             <div className="input">
-                {
-                    voices.length > 0 &&
-                    <Combo
-                        wide={true}
-                        label="Coach's voice"
-                        value={this.state.voice}
-                        onChange={this.handleVoiceChange}>
-                        {
-                            voices.map(voiceName => <div key={voiceName}>{voiceName}</div>)
-                        }
-                    </Combo>
-                }
                 <div className="input">
                     <Input
                         wide={true}
